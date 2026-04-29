@@ -1,0 +1,1245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ItihasaVerse – Choose Your Dharma</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --gold: #D4AF37;
+    --deep-gold: #B8860B;
+    --saffron: #FF6B00;
+    --crimson: #8B0000;
+    --dark-crimson: #5C0000;
+    --ivory: #FFF8E7;
+    --parchment: #F5E6C8;
+    --dark-bg: #0D0500;
+    --mid-bg: #1A0A00;
+    --dharma-green: #2ECC71;
+    --adharma-red: #E74C3C;
+    --neutral-blue: #3498DB;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Cormorant Garamond', serif;
+    background: var(--dark-bg);
+    color: var(--ivory);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(212,175,55,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(139,0,0,0.08) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23D4AF37' fill-opacity='0.03'%3E%3Cpath d='M30 0L37 21H60L42 34L49 55L30 42L11 55L18 34L0 21H23Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .screen { display: none; position: relative; z-index: 1; min-height: 100vh; }
+  .screen.active { display: flex; }
+
+  .ornate-border { border: 2px solid var(--gold); position: relative; }
+  .ornate-border::before, .ornate-border::after {
+    content: '✦'; position: absolute; color: var(--gold); font-size: 1.2rem;
+  }
+  .ornate-border::before { top: -12px; left: 50%; transform: translateX(-50%); background: var(--dark-bg); padding: 0 8px; }
+  .ornate-border::after { bottom: -12px; left: 50%; transform: translateX(-50%); background: var(--dark-bg); padding: 0 8px; }
+
+  /* ====== LANDING ====== */
+  #screen-landing { flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; }
+
+  .mandala-ring {
+    width: 160px; height: 160px; border-radius: 50%; border: 3px solid var(--gold);
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;
+    position: relative; animation: spin-slow 30s linear infinite;
+    box-shadow: 0 0 40px rgba(212,175,55,0.3), inset 0 0 40px rgba(212,175,55,0.05);
+  }
+  .mandala-ring::before { content: ''; position: absolute; inset: 8px; border-radius: 50%; border: 1px dashed rgba(212,175,55,0.5); }
+  .mandala-ring::after { content: '🕉'; font-size: 3.5rem; animation: spin-slow 30s linear infinite reverse; }
+  @keyframes spin-slow { to { transform: rotate(360deg); } }
+
+  .title-main {
+    font-family: 'Cinzel Decorative', serif; font-size: clamp(2.5rem, 6vw, 5rem);
+    color: var(--gold); text-shadow: 0 0 30px rgba(212,175,55,0.5), 0 2px 4px rgba(0,0,0,0.8);
+    letter-spacing: 0.05em; line-height: 1.1; animation: glow-pulse 3s ease-in-out infinite;
+  }
+  @keyframes glow-pulse {
+    0%, 100% { text-shadow: 0 0 20px rgba(212,175,55,0.4), 0 2px 4px rgba(0,0,0,0.8); }
+    50% { text-shadow: 0 0 50px rgba(212,175,55,0.8), 0 0 80px rgba(255,107,0,0.3), 0 2px 4px rgba(0,0,0,0.8); }
+  }
+
+  .title-sub { font-family: 'Cinzel', serif; font-size: clamp(0.9rem, 2vw, 1.2rem); color: var(--saffron); letter-spacing: 0.3em; text-transform: uppercase; margin: 8px 0 20px; }
+  .title-desc { font-size: clamp(1rem, 2vw, 1.25rem); color: var(--parchment); max-width: 600px; line-height: 1.8; font-style: italic; margin-bottom: 40px; opacity: 0.9; }
+
+  .divider-ornate { display: flex; align-items: center; gap: 16px; margin: 20px auto; width: fit-content; color: var(--gold); font-size: 1.2rem; }
+  .divider-ornate::before, .divider-ornate::after { content: '───────'; color: rgba(212,175,55,0.4); font-size: 0.8rem; }
+
+  /* ====== BUTTONS ====== */
+  .btn-primary {
+    font-family: 'Cinzel', serif; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.15em;
+    text-transform: uppercase; color: var(--dark-bg);
+    background: linear-gradient(135deg, var(--gold), var(--deep-gold), var(--saffron));
+    border: none; padding: 16px 48px; cursor: pointer;
+    clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+    position: relative; transition: all 0.3s ease; box-shadow: 0 4px 20px rgba(212,175,55,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,175,55,0.6); filter: brightness(1.1); }
+  .btn-primary:active { transform: translateY(0); }
+
+  .btn-secondary {
+    font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 0.1em; color: var(--gold);
+    background: transparent; border: 1px solid rgba(212,175,55,0.4); padding: 10px 28px; cursor: pointer; transition: all 0.3s ease;
+  }
+  .btn-secondary:hover { border-color: var(--gold); background: rgba(212,175,55,0.08); }
+
+  .btn-icon {
+    background: transparent; border: none; cursor: pointer; padding: 4px 8px;
+    font-size: 1rem; transition: opacity 0.2s; opacity: 0.6; line-height: 1;
+  }
+  .btn-icon:hover { opacity: 1; }
+
+  /* ====== CHARACTER SELECT ====== */
+  #screen-characters { flex-direction: column; align-items: center; padding: 40px 20px 60px; }
+
+  .screen-header { text-align: center; margin-bottom: 50px; }
+  .screen-title { font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--gold); margin-bottom: 10px; }
+  .screen-subtitle { font-size: 1.15rem; color: rgba(245,230,200,0.7); font-style: italic; }
+
+  .characters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; max-width: 1100px; width: 100%; }
+
+  .character-card {
+    background: linear-gradient(160deg, rgba(26,10,0,0.9), rgba(13,5,0,0.95));
+    border: 1px solid rgba(212,175,55,0.25); padding: 32px 20px 28px; text-align: center;
+    cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden;
+  }
+  .character-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, transparent 0%, rgba(212,175,55,0.06) 100%); opacity: 0; transition: opacity 0.3s; }
+  .character-card:hover::before { opacity: 1; }
+  .character-card:hover { border-color: var(--gold); transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 50px rgba(212,175,55,0.2), 0 0 0 1px rgba(212,175,55,0.3); }
+
+  .char-emoji { font-size: 4rem; display: block; margin-bottom: 16px; filter: drop-shadow(0 0 10px rgba(212,175,55,0.4)); }
+  .char-name { font-family: 'Cinzel', serif; font-size: 1.4rem; color: var(--gold); font-weight: 700; margin-bottom: 6px; }
+  .char-role { font-size: 0.9rem; color: var(--saffron); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+  .char-desc { font-size: 0.95rem; color: rgba(245,230,200,0.7); line-height: 1.6; font-style: italic; }
+  .char-difficulty { display: inline-flex; gap: 4px; margin-top: 14px; }
+  .diff-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(212,175,55,0.2); border: 1px solid rgba(212,175,55,0.4); }
+  .diff-dot.filled { background: var(--gold); }
+
+  /* ====== STORY SCREEN ====== */
+  #screen-story { flex-direction: column; align-items: center; padding: 30px 20px 60px; }
+
+  .story-header { width: 100%; max-width: 900px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; flex-wrap: wrap; gap: 16px; }
+
+  .char-badge { display: flex; align-items: center; gap: 12px; background: rgba(212,175,55,0.08); border: 1px solid rgba(212,175,55,0.25); padding: 10px 20px; }
+  .char-badge-emoji { font-size: 1.8rem; }
+  .char-badge-name { font-family: 'Cinzel', serif; font-size: 1rem; color: var(--gold); }
+
+  .dharma-meter-wrap { text-align: center; }
+  .dharma-label { font-family: 'Cinzel', serif; font-size: 0.75rem; color: var(--saffron); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 6px; }
+  .dharma-bar-outer { width: 200px; height: 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(212,175,55,0.3); border-radius: 7px; overflow: hidden; }
+  .dharma-bar-inner { height: 100%; border-radius: 7px; transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.6s; background: linear-gradient(90deg, var(--dharma-green), #27AE60); }
+  .dharma-score-text { font-family: 'Cinzel', serif; font-size: 0.85rem; color: var(--ivory); margin-top: 5px; }
+  .scenario-count { font-family: 'Cinzel', serif; font-size: 0.85rem; color: rgba(245,230,200,0.5); letter-spacing: 0.1em; }
+
+  .story-box { width: 100%; max-width: 900px; background: linear-gradient(145deg, rgba(26,10,0,0.95), rgba(20,8,0,0.98)); border: 1px solid rgba(212,175,55,0.3); padding: 40px; margin-bottom: 30px; position: relative; }
+  .story-box::before { content: '❝'; position: absolute; top: 10px; left: 20px; font-size: 3rem; color: rgba(212,175,55,0.15); font-family: Georgia, serif; line-height: 1; }
+
+  .scenario-title { font-family: 'Cinzel', serif; font-size: 1.5rem; color: var(--saffron); margin-bottom: 6px; }
+  .scenario-setting { font-size: 0.85rem; color: rgba(212,175,55,0.6); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 20px; }
+  .scenario-text { font-size: 1.15rem; line-height: 1.9; color: var(--parchment); margin-bottom: 24px; }
+  .scenario-question { font-family: 'Cinzel', serif; font-size: 1.1rem; color: var(--gold); font-weight: 600; padding-top: 20px; border-top: 1px solid rgba(212,175,55,0.2); }
+
+  .choices-grid { width: 100%; max-width: 900px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+  @media(max-width:600px) { .choices-grid { grid-template-columns: 1fr; } }
+
+  .choice-btn { background: linear-gradient(145deg, rgba(26,10,0,0.9), rgba(13,5,0,0.95)); border: 1px solid rgba(212,175,55,0.2); padding: 24px 28px; text-align: left; cursor: pointer; transition: all 0.35s ease; position: relative; overflow: hidden; }
+  .choice-btn::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(212,175,55,0.1), transparent); opacity: 0; transition: opacity 0.3s; }
+  .choice-btn:hover::after { opacity: 1; }
+  .choice-btn:hover { border-color: var(--gold); transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,175,55,0.2); }
+  .choice-letter { font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.2em; color: var(--saffron); text-transform: uppercase; margin-bottom: 8px; }
+  .choice-text { font-size: 1.05rem; color: var(--parchment); line-height: 1.6; font-weight: 500; }
+  .choice-hint { font-size: 0.85rem; color: rgba(245,230,200,0.45); margin-top: 8px; font-style: italic; }
+
+  /* ====== OUTCOME ====== */
+  #screen-outcome { flex-direction: column; align-items: center; padding: 40px 20px 60px; }
+
+  .outcome-card { width: 100%; max-width: 860px; background: linear-gradient(145deg, rgba(26,10,0,0.97), rgba(13,5,0,0.99)); border: 1px solid rgba(212,175,55,0.3); overflow: hidden; animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  .outcome-header { padding: 30px 40px; border-bottom: 1px solid rgba(212,175,55,0.2); display: flex; align-items: center; gap: 16px; }
+  .outcome-icon { font-size: 2.5rem; }
+  .outcome-verdict { font-family: 'Cinzel', serif; font-size: 1.6rem; font-weight: 700; }
+  .outcome-verdict.dharmic { color: var(--dharma-green); }
+  .outcome-verdict.adharmic { color: var(--adharma-red); }
+  .outcome-verdict.neutral { color: var(--neutral-blue); }
+
+  .outcome-body { padding: 36px 40px; }
+  .outcome-section { margin-bottom: 28px; }
+  .outcome-section-label { font-family: 'Cinzel', serif; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--saffron); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .outcome-section-label::after { content: ''; flex: 1; height: 1px; background: rgba(212,175,55,0.15); }
+  .outcome-text { font-size: 1.1rem; line-height: 1.85; color: var(--parchment); }
+
+  .alt-outcome-box { background: rgba(139,0,0,0.12); border: 1px solid rgba(139,0,0,0.3); padding: 20px; margin-top: 10px; }
+
+  .dharma-gain { display: inline-flex; align-items: center; gap: 8px; padding: 8px 20px; border-radius: 4px; font-family: 'Cinzel', serif; font-size: 0.9rem; font-weight: 600; margin-bottom: 20px; }
+  .dharma-gain.positive { background: rgba(46,204,113,0.12); border: 1px solid rgba(46,204,113,0.3); color: var(--dharma-green); }
+  .dharma-gain.negative { background: rgba(231,76,60,0.12); border: 1px solid rgba(231,76,60,0.3); color: var(--adharma-red); }
+  .dharma-gain.zero { background: rgba(52,152,219,0.12); border: 1px solid rgba(52,152,219,0.3); color: var(--neutral-blue); }
+
+  .moral-lesson-box { background: linear-gradient(135deg, rgba(212,175,55,0.08), rgba(255,107,0,0.05)); border: 1px solid rgba(212,175,55,0.3); padding: 24px; position: relative; }
+  .moral-lesson-box::before { content: '🪔'; position: absolute; top: -14px; left: 24px; font-size: 1.4rem; background: var(--dark-bg); padding: 0 6px; }
+  .moral-text { font-size: 1.15rem; line-height: 1.8; color: var(--ivory); font-style: italic; }
+  .sanskrit-quote { font-family: 'Cinzel', serif; font-size: 0.95rem; color: var(--gold); margin-top: 12px; opacity: 0.8; }
+
+  .outcome-actions { display: flex; gap: 14px; padding: 24px 40px 36px; flex-wrap: wrap; }
+
+  /* ====== DECISION TREE ====== */
+  #screen-tree { flex-direction: column; align-items: center; padding: 40px 20px 60px; }
+  .tree-canvas { width: 100%; max-width: 900px; overflow-x: auto; }
+
+  /* Tree character section */
+  .tree-char-section {
+    margin-bottom: 40px;
+    border: 1px solid rgba(212,175,55,0.15);
+    background: rgba(26,10,0,0.6);
+  }
+  .tree-char-header {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 24px;
+    border-bottom: 1px solid rgba(212,175,55,0.12);
+    background: rgba(212,175,55,0.05);
+  }
+  .tree-char-score {
+    margin-left: auto; font-family: 'Cinzel', serif; font-size: 0.85rem;
+  }
+  .tree-char-body { padding: 20px 24px; }
+
+  /* ====== RESULTS ====== */
+  #screen-results { flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; }
+
+  .results-card { width: 100%; max-width: 700px; background: linear-gradient(145deg, rgba(26,10,0,0.97), rgba(13,5,0,0.99)); border: 1px solid rgba(212,175,55,0.3); padding: 50px 40px; animation: slideUp 0.5s ease; }
+
+  .results-score-ring { width: 140px; height: 140px; border-radius: 50%; border: 3px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 0 auto 30px; box-shadow: 0 0 40px rgba(212,175,55,0.3); }
+  .results-score-number { font-family: 'Cinzel Decorative', serif; font-size: 2.5rem; color: var(--gold); line-height: 1; }
+  .results-score-label { font-size: 0.75rem; color: var(--saffron); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+
+  .results-title { font-family: 'Cinzel', serif; font-size: 1.8rem; color: var(--gold); margin-bottom: 12px; }
+  .results-desc { font-size: 1.1rem; color: var(--parchment); line-height: 1.7; margin-bottom: 30px; font-style: italic; }
+
+  .choices-summary { text-align: left; margin-bottom: 30px; }
+  .summary-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid rgba(212,175,55,0.1); }
+  .summary-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .summary-dot.dharmic { background: var(--dharma-green); }
+  .summary-dot.adharmic { background: var(--adharma-red); }
+  .summary-dot.neutral { background: var(--neutral-blue); }
+  .summary-text { font-size: 0.95rem; color: var(--parchment); line-height: 1.5; }
+  .summary-score { font-family: 'Cinzel', serif; font-size: 0.85rem; margin-top: 2px; }
+  .summary-score.dharmic { color: var(--dharma-green); }
+  .summary-score.adharmic { color: var(--adharma-red); }
+
+  /* ====== JOURNAL ====== */
+  #screen-journal { flex-direction: column; align-items: center; padding: 40px 20px 60px; }
+  .journal-box { width: 100%; max-width: 700px; background: linear-gradient(145deg, rgba(26,10,0,0.97), rgba(13,5,0,0.99)); border: 1px solid rgba(212,175,55,0.3); padding: 40px; }
+  .journal-entries { margin-bottom: 30px; }
+
+  .journal-entry {
+    background: rgba(212,175,55,0.04);
+    border: 1px solid rgba(212,175,55,0.12);
+    padding: 16px 20px;
+    margin-bottom: 12px;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+  .journal-entry:hover { border-color: rgba(212,175,55,0.25); }
+  .journal-entry-meta { font-family: 'Cinzel', serif; font-size: 0.75rem; color: var(--saffron); margin-bottom: 6px; }
+  .journal-entry-text { font-size: 0.95rem; color: var(--parchment); line-height: 1.6; }
+
+  /* Edit mode for journal entry */
+  .journal-entry-edit-area {
+    width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(212,175,55,0.35);
+    color: var(--ivory); font-family: 'Cormorant Garamond', serif; font-size: 0.95rem;
+    padding: 10px; resize: vertical; min-height: 70px; outline: none; margin-top: 8px; line-height: 1.6;
+  }
+  .journal-entry-edit-area:focus { border-color: rgba(212,175,55,0.6); }
+
+  .journal-entry-actions {
+    display: flex; gap: 8px; align-items: center;
+    margin-top: 10px; justify-content: flex-end;
+  }
+  .journal-entry-actions button {
+    font-family: 'Cinzel', serif; font-size: 0.72rem; letter-spacing: 0.08em;
+    padding: 5px 14px; cursor: pointer; transition: all 0.2s; border: 1px solid; border-radius: 2px;
+  }
+  .btn-edit-save { background: rgba(46,204,113,0.1); border-color: rgba(46,204,113,0.35) !important; color: var(--dharma-green) !important; }
+  .btn-edit-save:hover { background: rgba(46,204,113,0.2); }
+  .btn-edit-cancel { background: transparent; border-color: rgba(212,175,55,0.25) !important; color: rgba(245,230,200,0.5) !important; }
+  .btn-edit-cancel:hover { border-color: rgba(212,175,55,0.5) !important; color: var(--parchment) !important; }
+  .btn-entry-edit { color: rgba(212,175,55,0.6); border: none !important; background: none; font-size: 0.8rem; padding: 4px 8px; }
+  .btn-entry-edit:hover { color: var(--gold); }
+  .btn-entry-delete { color: rgba(231,76,60,0.6); border: none !important; background: none; font-size: 0.8rem; padding: 4px 8px; }
+  .btn-entry-delete:hover { color: var(--adharma-red); }
+
+  .journal-input-area { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(212,175,55,0.25); color: var(--ivory); font-family: 'Cormorant Garamond', serif; font-size: 1rem; padding: 16px; resize: vertical; min-height: 100px; outline: none; margin-bottom: 12px; }
+  .journal-input-area::placeholder { color: rgba(245,230,200,0.3); font-style: italic; }
+  .journal-input-area:focus { border-color: rgba(212,175,55,0.5); }
+
+  /* ====== NAV — auto-hide, appears on hover near top ====== */
+  .main-nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(13,5,0,0.97);
+    border-bottom: 1px solid rgba(212,175,55,0.2);
+    padding: 0 30px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    transform: translateY(-100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), opacity 0.3s ease;
+    opacity: 0;
+    backdrop-filter: blur(8px);
+  }
+  .main-nav.visible { display: flex; }
+  .main-nav.revealed { transform: translateY(0); opacity: 1; }
+
+  .nav-logo { font-family: 'Cinzel Decorative', serif; font-size: 1rem; color: var(--gold); cursor: pointer; }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-btn { font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.08em; color: rgba(245,230,200,0.6); background: transparent; border: none; padding: 8px 14px; cursor: pointer; transition: color 0.2s; }
+  .nav-btn:hover, .nav-btn.active { color: var(--gold); }
+
+  .has-nav { padding-top: 20px; }
+
+  /* ====== PARTICLES ====== */
+  .particle { position: fixed; width: 3px; height: 3px; border-radius: 50%; background: var(--gold); pointer-events: none; z-index: 0; animation: float-up linear infinite; opacity: 0; }
+  @keyframes float-up { 0% { opacity: 0; transform: translateY(100vh) scale(0); } 10% { opacity: 0.6; } 90% { opacity: 0.2; } 100% { opacity: 0; transform: translateY(-20px) scale(1); } }
+
+  .fade-in { animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .tag { display: inline-block; font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; padding: 3px 10px; border-radius: 2px; }
+  .tag-dharmic { background: rgba(46,204,113,0.15); color: var(--dharma-green); border: 1px solid rgba(46,204,113,0.25); }
+  .tag-adharmic { background: rgba(231,76,60,0.15); color: var(--adharma-red); border: 1px solid rgba(231,76,60,0.25); }
+  .tag-neutral { background: rgba(52,152,219,0.15); color: var(--neutral-blue); border: 1px solid rgba(52,152,219,0.25); }
+
+  @media(max-width: 600px) {
+    .story-box, .outcome-body, .outcome-actions { padding: 24px 20px; }
+    .outcome-header { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<!-- NAV -->
+<nav class="main-nav" id="mainNav">
+  <div class="nav-logo" onclick="goToScreen('characters')">ItihasaVerse</div>
+  <div class="nav-links">
+    <button class="nav-btn" onclick="goToScreen('characters')">Characters</button>
+    <button class="nav-btn" id="navJournal" onclick="goToScreen('journal')">Journal</button>
+    <button class="nav-btn" id="navTree" onclick="showDecisionTree()" style="display:none">Full Tree</button>
+    <button class="nav-btn" id="navResults" onclick="goToScreen('results')" style="display:none">My Journey</button>
+  </div>
+</nav>
+
+<!-- ===================== LANDING ===================== -->
+<section class="screen active" id="screen-landing">
+  <div style="width:100%;max-width:700px;margin:0 auto;text-align:center;padding:20px;">
+    <div class="mandala-ring"></div>
+    <h1 class="title-main">ItihasaVerse</h1>
+    <p class="title-sub">Choose Your Dharma</p>
+    <div class="divider-ornate">॥ इतिहासवर्स ॥</div>
+    <p class="title-desc">
+      Step into the Ramayana. Face the same choices as Rama, Sita, Ravana, and more.
+      Every decision shapes your path — and reveals the wisdom hidden in every moment.
+    </p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:10px;">
+      <button class="btn-primary" onclick="startJourney()">Begin Your Journey</button>
+      <button class="btn-secondary" onclick="goToScreen('journal')">📖 Open Journal</button>
+    </div>
+    <p style="margin-top:40px;font-size:0.85rem;color:rgba(245,230,200,0.3);letter-spacing:0.05em;">
+      5 Characters · 10 Scenarios · Dharma Meter · Reflection Journal
+    </p>
+  </div>
+</section>
+
+<!-- ===================== CHARACTER SELECT ===================== -->
+<section class="screen has-nav" id="screen-characters">
+  <div style="width:100%;max-width:1100px;margin:0 auto;">
+    <div class="screen-header">
+      <h2 class="screen-title">Choose Your Character</h2>
+      <p class="screen-subtitle">Each soul faces their own crossroads. Whose path will you walk?</p>
+    </div>
+    <div class="characters-grid" id="charactersGrid"></div>
+  </div>
+</section>
+
+<!-- ===================== STORY / DECISION ===================== -->
+<section class="screen has-nav" id="screen-story">
+  <div style="width:100%;max-width:900px;margin:0 auto;">
+    <div class="story-header">
+      <div class="char-badge">
+        <span class="char-badge-emoji" id="storyCharEmoji"></span>
+        <span class="char-badge-name" id="storyCharName"></span>
+      </div>
+      <div class="dharma-meter-wrap">
+        <div class="dharma-label">Dharma Meter</div>
+        <div class="dharma-bar-outer">
+          <div class="dharma-bar-inner" id="dharmaBar" style="width:50%"></div>
+        </div>
+        <div class="dharma-score-text" id="dharmaScoreText">Score: 0</div>
+      </div>
+      <div class="scenario-count" id="scenarioCount"></div>
+    </div>
+
+    <div class="story-box" id="storyBox">
+      <div class="scenario-title" id="scenarioTitle"></div>
+      <div class="scenario-setting" id="scenarioSetting"></div>
+      <div class="scenario-text" id="scenarioText"></div>
+      <div class="scenario-question" id="scenarioQuestion"></div>
+    </div>
+
+    <div class="choices-grid" id="choicesGrid"></div>
+    <div id="decisionTreeViz" style="margin-top:10px;"></div>
+  </div>
+</section>
+
+<!-- ===================== OUTCOME ===================== -->
+<section class="screen has-nav" id="screen-outcome">
+  <div style="width:100%;max-width:860px;margin:0 auto;">
+    <div class="outcome-card" id="outcomeCard">
+      <div class="outcome-header">
+        <span class="outcome-icon" id="outcomeIcon"></span>
+        <div>
+          <div class="outcome-verdict" id="outcomeVerdict"></div>
+          <div style="font-size:0.9rem;color:rgba(245,230,200,0.5);margin-top:4px;" id="outcomeSubtitle"></div>
+        </div>
+        <div style="margin-left:auto;" id="outcomeDharmaGain"></div>
+      </div>
+      <div class="outcome-body">
+        <div class="outcome-section">
+          <div class="outcome-section-label">⚡ What Actually Happened in the Ramayana</div>
+          <div class="outcome-text" id="actualOutcome"></div>
+        </div>
+        <div class="outcome-section" id="altOutcomeSection">
+          <div class="outcome-section-label">🔀 What If You Had Chosen Differently?</div>
+          <div class="alt-outcome-box">
+            <div class="outcome-text" id="altOutcome"></div>
+          </div>
+        </div>
+        <div class="outcome-section">
+          <div class="outcome-section-label">🪔 Moral Lesson</div>
+          <div class="moral-lesson-box">
+            <div class="moral-text" id="moralLesson"></div>
+            <div class="sanskrit-quote" id="sanskritQuote"></div>
+          </div>
+        </div>
+      </div>
+      <div class="outcome-actions">
+        <button class="btn-primary" id="nextBtn" onclick="nextScenario()">Next Scenario →</button>
+        <button class="btn-secondary" onclick="goToScreen('journal')">📝 Add to Journal</button>
+        <button class="btn-secondary" onclick="showDecisionTree()">🌿 Decision Tree</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== DECISION TREE ===================== -->
+<section class="screen has-nav" id="screen-tree">
+  <div class="tree-canvas" id="treeCanvas">
+    <div class="screen-header" style="text-align:center;margin-bottom:30px;">
+      <h2 class="screen-title">Your Decision Tree</h2>
+      <p class="screen-subtitle">Every character. Every choice. Every consequence.</p>
+    </div>
+    <div id="treeContent"></div>
+    <div style="text-align:center;margin-top:30px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn-primary" onclick="continueFromTree()">Continue Journey</button>
+      <button class="btn-secondary" onclick="goToScreen('characters')">Choose Another Character</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== RESULTS ===================== -->
+<section class="screen has-nav" id="screen-results">
+  <div class="results-card">
+    <div class="results-score-ring">
+      <span class="results-score-number" id="finalScore">0</span>
+      <span class="results-score-label">Dharma</span>
+    </div>
+    <h2 class="results-title" id="resultsTitle">Your Journey Ends</h2>
+    <p class="results-desc" id="resultsDesc"></p>
+    <div class="choices-summary" id="choicesSummary"></div>
+    <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+      <button class="btn-primary" onclick="goToScreen('characters')">Play Another Character</button>
+      <button class="btn-secondary" onclick="goToScreen('journal')">View Journal</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== JOURNAL ===================== -->
+<section class="screen has-nav" id="screen-journal">
+  <div class="journal-box">
+    <div class="screen-header" style="text-align:left;margin-bottom:30px;">
+      <h2 class="screen-title">Reflection Journal</h2>
+      <p class="screen-subtitle">Record your thoughts, decisions, and discoveries</p>
+    </div>
+    <div class="journal-entries" id="journalEntries">
+      <p style="color:rgba(245,230,200,0.35);font-style:italic;font-size:0.95rem;">Your reflections will appear here...</p>
+    </div>
+    <textarea class="journal-input-area" id="journalInput" placeholder="Write your reflection... What would you have chosen differently? What did this teach you?"></textarea>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn-primary" onclick="saveJournalEntry()">Save Entry</button>
+      <button class="btn-secondary" onclick="goBack()">← Go Back</button>
+    </div>
+  </div>
+</section>
+
+<script>
+// ============================================================
+//  DATA
+// ============================================================
+const CHARACTERS = [
+  { id: 'rama',       name: 'Rama',       emoji: '🏹', role: 'Prince of Ayodhya',  desc: 'The ideal king. Every choice defines what it means to uphold Dharma above personal comfort.', difficulty: 2, color: '#3498DB' },
+  { id: 'sita',       name: 'Sita',       emoji: '🌸', role: 'Princess of Mithila', desc: 'A queen of unwavering courage. Her choices define devotion, dignity and inner strength.', difficulty: 2, color: '#E91E8C' },
+  { id: 'ravana',     name: 'Ravana',     emoji: '👑', role: 'King of Lanka',       desc: 'A brilliant scholar-king consumed by pride. What happens when power eclipses wisdom?', difficulty: 3, color: '#E74C3C' },
+  { id: 'bharata',    name: 'Bharata',    emoji: '⚔️', role: 'Prince of Ayodhya',  desc: 'Loyalty vs. opportunity. Would you sacrifice a kingdom to stand by what is right?', difficulty: 2, color: '#F39C12' },
+  { id: 'vibhishana', name: 'Vibhishana', emoji: '🕊️', role: 'Brother of Ravana',  desc: 'The most painful choice: family or Dharma? Truth or loyalty to those you love?', difficulty: 3, color: '#2ECC71' }
+];
+
+const SCENARIOS = {
+  rama: [
+    {
+      id: 'r1', title: 'The Exile Decree', setting: '📍 The Royal Palace, Ayodhya',
+      text: `King Dasharatha calls you, his beloved eldest son Rama, to his chamber. His face is pale with grief. He tells you that he is bound by a promise made years ago to Queen Kaikeyi — she has claimed two boons: that her son Bharata must be crowned king, and that you, Rama, must be exiled to the forest for fourteen years. \n\n      Your father weeps, unable to speak further. The ministers stand in stunned silence. Your coronation was hours away. Everything you worked for — gone in one moment.`,
+      question: '⚖️ What do you do, Rama?',
+      choices: [
+        { letter: 'A', text: 'Accept the exile with grace and leave immediately to protect your father\'s honour.', hint: 'Uphold his promise as your own', dharmaPoints: 15, type: 'dharmic' },
+        { letter: 'B', text: 'Refuse the exile. You are the rightful heir and the army supports you.', hint: 'Assert your rightful claim to the throne', dharmaPoints: -15, type: 'adharmic' }
+      ],
+      outcomes: {
+        A: { verdict: 'The Path of Dharma', icon: '✨', type: 'dharmic', actual: `Rama accepted the exile without a single word of protest, saying "My father's word is my command." He changed out of royal robes into the simple bark-cloth of a forest hermit and prepared to leave. This act of selfless obedience became the cornerstone of his legend — Maryada Purushottam, the ideal upholder of honour.`, alt: `Had Rama refused, he could have easily taken the throne by force — the army loved him. But Dasharatha would have died a man who broke his promise. The entire foundation of trust in Ayodhya's royal word would collapse. The Ramayana may never have happened — but neither would Rama's greatness.`, moral: `True strength is not in holding power, but in releasing it when duty calls. Rama's acceptance of exile wasn't weakness — it was the highest form of courage: the courage to honour your word even when it costs everything.`, sanskrit: '॥ धर्मो रक्षति रक्षितः ॥ — "Dharma, when protected, protects in return."' },
+        B: { verdict: 'The Path of Ego', icon: '💔', type: 'adharmic', actual: `In our story, Rama chose acceptance. Had he refused, he would have staged a coup against his own father. Dasharatha, unable to bear the broken promise, would still have died. But Rama would be remembered not as a noble prince, but as the son who shattered his father's honour.`, alt: `The kingdom gained, the legend lost. Power without righteousness is remembered as tyranny, not greatness. Bharata, known for his deep love for Rama, would never have accepted the throne — creating civil war in Ayodhya.`, moral: `A crown seized by force never truly rests in peace. Real leadership means knowing when to step back. What you lose in position, you can gain a thousandfold in honour.`, sanskrit: '॥ सत्यमेव जयते ॥ — "Truth alone triumphs."' }
+      }
+    },
+    {
+      id: 'r2', title: 'Sita\'s Demand', setting: '📍 The Forest of Chitrakoot',
+      text: `You have settled into exile in the forest with Sita and Lakshmana. One afternoon, a magical golden deer appears — glimmering in sunlight, unlike anything you have ever seen. Sita is captivated. She begs you to catch it for her — dead or alive.\n\n      Something feels deeply wrong. The deer moves too perfectly, too deliberately. Lakshmana is suspicious and warns you: "No deer shines like gold, brother. This must be the demon Maricha in disguise." But Sita's eyes are filled with longing. She rarely asks for anything.`,
+      question: '⚖️ What do you do, Rama?',
+      choices: [
+        { letter: 'A', text: 'Trust Lakshmana\'s instinct and stay — it is likely a trap sent by Ravana.', hint: 'Logic over emotion', dharmaPoints: 10, type: 'dharmic' },
+        { letter: 'B', text: 'Go after the deer to fulfil Sita\'s wish — your duty to a loving wife matters too.', hint: 'Honour her desire', dharmaPoints: -5, type: 'adharmic' }
+      ],
+      outcomes: {
+        A: { verdict: 'Wisdom Prevails', icon: '🧠', type: 'dharmic', actual: `In the actual Ramayana, Rama chose to chase the deer despite Lakshmana's warning, giving in to Sita's wish. This one lapse in judgement — chasing desire over wisdom — allowed Ravana to abduct Sita. Had Rama held firm, the entire war of Lanka might never have happened.`, alt: `Staying back would have foiled Ravana's plan entirely. Maricha's illusion would have failed. Sita would remain safe. But the world would never have witnessed Rama's greatest test — or his greatest victory.`, moral: `Even the wisest leader can be swayed by love and longing. This scenario teaches us: beautiful distractions are often traps. Pause before chasing what glitters. Ask — who benefits if I move?`, sanskrit: '॥ विवेकः परमं बलम् ॥ — "Discernment is the highest strength."' },
+        B: { verdict: 'The Trap is Sprung', icon: '🦌', type: 'adharmic', actual: `Rama chased the golden deer — and as Lakshmana feared, it was Maricha the demon in disguise. Maricha mimicked Rama's dying voice, calling for Sita and Lakshmana. Sita forced Lakshmana to leave. In that moment of separation, Ravana struck and abducted Sita. This single impulsive decision set the entire Lanka war in motion.`, alt: `The golden deer glittering in sunlight seemed harmless — even beautiful. But in chasing it, Rama was separated from all he loved. The lesson is not to blame Sita or Rama, but to see: Ravana was never powerful enough to face Rama directly. He could only win through misdirection.`, moral: `We are often not defeated by frontal attack — but by the golden deer that leads us away from what matters. The greatest battles of life are won through stillness, not pursuit.`, sanskrit: '॥ माया महाठगिनी हम जानी ॥ — "Illusion is the great deceiver."' }
+      }
+    }
+  ],
+  sita: [
+    {
+      id: 's1', title: 'The Choice to Follow', setting: '📍 The Royal Chambers, Ayodhya',
+      text: `Rama has just told you that he must leave for fourteen years of exile in the forest. He is gentle but firm — he wants you to stay in the palace. "The forest is dangerous," he says. "There are thorns, wild animals, harsh rains. You are a queen. You have every comfort here."\n\n      Your in-laws, the ministers, everyone tells you: stay. You have never lived in the wild. And yet... something in your heart refuses to accept a life without your husband.`,
+      question: '⚖️ What do you do, Sita?',
+      choices: [
+        { letter: 'A', text: 'Insist on accompanying Rama. "Where you walk, I walk. Your forest is my palace."', hint: 'Love and devotion above comfort', dharmaPoints: 10, type: 'dharmic' },
+        { letter: 'B', text: 'Accept Rama\'s wish and remain safely in Ayodhya until his return.', hint: 'Obey his protective command', dharmaPoints: 0, type: 'neutral' }
+      ],
+      outcomes: {
+        A: { verdict: 'Courage of the Heart', icon: '❤️', type: 'dharmic', actual: `Sita's response in the Ramayana became one of literature's most powerful speeches. She told Rama: "A wife's true home is beside her husband — not in a palace without him." Rama, moved by her devotion and strength, allowed her to accompany him. Their years in the forest became a time of deep love, simplicity, and shared wisdom.`, alt: `Had Sita stayed, she would have been safe — but Rama's exile would have been a lonely, incomplete journey. The story we know, with all its trials and triumphs, is shaped by her insistence on sharing his path.`, moral: `True partnership is not about safety — it is about presence. Sita's decision shows that love is not passive waiting. It is the courage to walk into the unknown, together.`, sanskrit: '॥ पत्नी धर्मस्य सहधर्मिणी ॥ — "A wife is the partner of one\'s Dharma."' },
+        B: { verdict: 'Safety Without Soul', icon: '🏠', type: 'neutral', actual: `While staying would have kept Sita physically safe, the Ramayana shows us that her deepest nature was one of courage, not comfort. The real Sita insisted on going — not out of recklessness, but out of profound love and a warrior's spirit that refused to be separated from its purpose.`, alt: `Remaining in Ayodhya would have meant missing the forest years — the ashrams, the wisdom of sages, the test of her own strength. Sita's greatness was forged not in comfort, but in challenge.`, moral: `Sometimes the 'safe' choice keeps us from discovering who we truly are. Growth lives at the edge of comfort. Sita's courage to choose the difficult path is what made her extraordinary.`, sanskrit: '॥ शक्ति साहसे वसति ॥ — "Strength lives in courage."' }
+      }
+    },
+    {
+      id: 's2', title: 'The Line of Protection', setting: '📍 The Forest of Panchavati',
+      text: `A crying old man appears at the edge of your hut. He says he is hungry and alone. Lakshmana has drawn a protective line (Lakshman Rekha) around you before leaving: "Do not cross this line, Devi — it is your protection. No demon can cross it either."\n\n      But the old man weeps and says he cannot walk further. He looks frail and helpless. Your instinct to help pulls you forward. But something about his eyes seems... different.`,
+      question: '⚖️ What do you do, Sita?',
+      choices: [
+        { letter: 'A', text: 'Offer food from inside the boundary — extend help without crossing the line.', hint: 'Compassion with caution', dharmaPoints: 15, type: 'dharmic' },
+        { letter: 'B', text: 'Cross the line to help him properly — leaving someone hungry is not Dharma.', hint: 'Full compassion without boundary', dharmaPoints: -10, type: 'adharmic' }
+      ],
+      outcomes: {
+        A: { verdict: 'Wisdom in Compassion', icon: '🛡️', type: 'dharmic', actual: `In the actual Ramayana, Sita crossed the line — and the moment she did, the old man revealed himself as Ravana. Had she found a way to help from within the boundary, the most pivotal abduction in the epic would never have happened.`, alt: `Maintaining the protective boundary while still acting with compassion is possible. Help doesn't always require vulnerability. A protected heart can still give — it must simply give wisely.`, moral: `Compassion and wisdom are not opposites — they are partners. Boundaries exist not to make us cold, but to keep our ability to help others alive. A candle that burns itself out helps no one.`, sanskrit: '॥ विनाशकाले विपरीत बुद्धि ॥ — "When destruction nears, the mind turns contrary."' },
+        B: { verdict: 'The Abduction', icon: '🌑', type: 'adharmic', actual: `Sita crossed the Lakshman Rekha — and Ravana immediately shed his disguise. He grabbed her and flew to Lanka in his celestial chariot. Her abduction begins the central crisis of the Ramayana: the war, the search, the fire ordeal. One moment of well-intentioned boundary-crossing changed the destiny of two kingdoms.`, alt: `Ravana's disguise was perfect precisely because it targeted Sita's greatest virtue: her compassion. He didn't attack her with strength — he manipulated her goodness. The most dangerous traps in life are always disguised as our virtues.`, moral: `Our greatest strengths can become vulnerabilities when unguarded. Sita's compassion was real and beautiful — but wisdom asks us to pair every virtue with discernment. Not all who appear to need us, need us in the way they claim.`, sanskrit: '॥ स्वयं स्वस्य रक्षणम् ॥ — "One must protect oneself first to protect others."' }
+      }
+    }
+  ],
+  ravana: [
+    {
+      id: 'rv1', title: 'Vibhishana\'s Warning', setting: '📍 The Grand Court of Lanka',
+      text: `Your brother Vibhishana stands before your entire court and pleads with you. He says: "Brother, Sita is Rama's wife. Every scripture forbids taking another man's wife by force. Return her — and Lanka will be saved. Continue this path, and Lanka will burn."\n\n      Your courtiers stare. Your generals smirk. Your pride flares. You have ten heads of wisdom, you have conquered the three worlds — and your own brother presumes to lecture you? And yet... something in his words echoes.`,
+      question: '⚖️ What do you do, Ravana?',
+      choices: [
+        { letter: 'A', text: 'Listen to Vibhishana. Return Sita with honour and prevent the coming destruction.', hint: 'Pride bows to wisdom', dharmaPoints: 20, type: 'dharmic' },
+        { letter: 'B', text: 'Banish Vibhishana from Lanka. You will not be lectured in your own court.', hint: 'Authority must not be questioned', dharmaPoints: -20, type: 'adharmic' }
+      ],
+      outcomes: {
+        A: { verdict: 'The Wisdom You Didn\'t Choose', icon: '🌅', type: 'dharmic', actual: `Ravana banished Vibhishana and kept Sita. The result: Rama's army invaded Lanka, every great warrior of Lanka fell in battle, and Ravana himself was slain. Lanka — the golden city he had built — was burned to ash. Had he listened to his wisest advisor, all of this could have been prevented.`, alt: `Returning Sita would have required enormous ego-sacrifice. But it would have preserved Lanka, preserved his brilliance, and given Ravana a chance at redemption. The Ramayana might have ended with a negotiated peace — and Ravana remembered as a king who chose wisdom over ego.`, moral: `The most dangerous enemy of any leader is not the enemy outside — it is the pride inside that refuses good advice. Wisdom speaks quietly. Ego speaks loudly. Which voice you listen to will determine your destiny.`, sanskrit: '॥ अहंकाराद् विनाशः ॥ — "From ego arises destruction."' },
+        B: { verdict: 'Pride Before the Fall', icon: '🔥', type: 'adharmic', actual: `Ravana cast Vibhishana out of Lanka. Vibhishana, heartbroken, crossed the sea to Rama's camp and surrendered. He became Rama's advisor, using his deep knowledge of Lanka to help breach its defences. Ravana's greatest strategic mistake was pushing away his most righteous ally — who became his greatest threat.`, alt: `In silencing the voice of truth, Ravana sealed Lanka's fate. Every adviser who dares to speak truth to power is a gift. When you silence them, you choose to navigate without a compass.`, moral: `True intelligence is not about how much you know — it is about being willing to hear what you don't want to hear. The greatest leaders cultivate people who will challenge them. The weakest surround themselves with only those who agree.`, sanskrit: '॥ मनुष्याणां मनोदर्पणम् ॥ — "The mind of man is a mirror of his character."' }
+      }
+    },
+    {
+      id: 'rv2', title: 'The Last Hour', setting: '📍 The Battlefield of Lanka',
+      text: `Your son Indrajit has fallen. Your finest generals are dead. Rama's army stands at your gates. Hanuman brings a final message from Rama: "Return Sita now. The battle stops. Your life is spared. Lanka is yours to keep."\n\n      One word from you and the war ends. The message is genuine — Rama has never broken his word. Your remaining ministers and your wife Mandodari both urge you: "Enough. Let her go. Save Lanka. Save yourself."\n\n      But the war drums echo in your blood. And your ten heads all whisper different things.`,
+      question: '⚖️ What do you do in your final hour?',
+      choices: [
+        { letter: 'A', text: 'Accept Rama\'s offer. Return Sita and end the war with honour.', hint: 'Choose life and Lanka over pride', dharmaPoints: 15, type: 'dharmic' },
+        { letter: 'B', text: 'Fight to the end. A king of Lanka does not surrender — he falls with his crown.', hint: 'Die as the king of Lanka', dharmaPoints: -5, type: 'neutral' }
+      ],
+      outcomes: {
+        A: { verdict: 'The Peace That Could Have Been', icon: '☮️', type: 'dharmic', actual: `Ravana chose to fight — and fell to Rama's arrow, alone on the battlefield. Yet even Rama, upon Ravana's death, honoured him: "You were a great scholar, a devoted son of Brahma. Your fall was not from lack of greatness — but from the misuse of it."`, alt: `Accepting Rama's offer would have required the deepest kind of courage — the courage to admit a mistake. Lanka would have survived. Ravana would have been remembered as a brilliant, flawed, but ultimately wise king who chose his people over his pride.`, moral: `There is no shame in choosing peace when you have the power to choose war. The bravest decision is not always the one that ends in battle — sometimes it is the one that ends in healing.`, sanskrit: '॥ क्षमा वीरस्य भूषणम् ॥ — "Forgiveness is the ornament of the brave."' },
+        B: { verdict: 'The Warrior\'s End', icon: '⚔️', type: 'neutral', actual: `Ravana fought to his last breath on the battlefield of Lanka. He died as he had lived — fierce, brilliant, and unbroken in spirit. Even Rama wept at his fall. Valmiki's Ramayana portrays Ravana as a tragic hero — not purely evil, but a greatness destroyed by its own shadow.`, alt: `His death was not without honour. But Lanka burned. His people suffered. His wife, Mandodari — a woman of extraordinary wisdom — had begged him to stop. In choosing his pride over her counsel, he chose a noble death over a meaningful life.`, moral: `Some decisions cost only us. Others cost everyone around us. Leadership means understanding that our choices ripple outward — and those ripples reach the people who love us most.`, sanskrit: '॥ स्वयं विनाशः अहंकारो भवति ॥ — "Ego itself becomes one\'s destruction."' }
+      }
+    }
+  ],
+  bharata: [
+    {
+      id: 'b1', title: 'The Empty Throne', setting: '📍 The Royal Court, Ayodhya',
+      text: `You have returned from your maternal uncle's home to find Ayodhya draped in grief. Your father Dasharatha is dead. Your brother Rama is in exile — and your mother Kaikeyi smiles at you and says: "You are king now, Bharata. This was done for you."\n\n      The throne gleams. Ministers bow. The army is ready. You had nothing to do with this — but it was done in your name. Your mother seems genuinely happy. And everyone waits for you to take the crown.`,
+      question: '⚖️ What do you do, Bharata?',
+      choices: [
+        { letter: 'A', text: 'Reject the throne and march to the forest to bring Rama back — this was never yours to take.', hint: 'Justice over opportunity', dharmaPoints: 20, type: 'dharmic' },
+        { letter: 'B', text: 'Accept the throne and rule wisely — Rama is gone, Ayodhya needs a king now.', hint: 'Pragmatism — the kingdom must be governed', dharmaPoints: -10, type: 'adharmic' }
+      ],
+      outcomes: {
+        A: { verdict: 'The Purest Loyalty', icon: '👑', type: 'dharmic', actual: `Bharata marched barefoot to the forest, found Rama, and wept at his feet — furious at his mother, devastated by his father's death, and desperate to bring Rama home. When Rama refused to break his vow of exile, Bharata took Rama's sandals and placed them on the throne — ruling as regent in Rama's name for fourteen years, living like an ascetic himself.`, alt: `Bharata's act became the Ramayana's greatest symbol of fraternal love. No throne-hunger, no ambition — just a brother's refusal to profit from injustice. In choosing the harder path, Bharata achieved something rare: he became a king admired not for ruling, but for refusing to.`, moral: `The test of character is not what you do when you have nothing — it is what you do when everything is handed to you on a platter. Bharata had the crown, the court, and the kingdom. He returned it all. That is true dharma.`, sanskrit: '॥ भ्रातृप्रेम परमो धर्मः ॥ — "Love for one\'s brother is the highest Dharma."' },
+        B: { verdict: 'The Pragmatist\'s Regret', icon: '😔', type: 'adharmic', actual: `In our story, the real Bharata did the opposite — he rejected the crown with tears of fury. Had he accepted it, he would have been well within political rights — but the moral stain of his mother's manipulation would never have left him.`, alt: `A kingdom needs a king — this is true. But a king who sits on a throne built by injustice governs always in its shadow. The people would have accepted him, but he would never have fully accepted himself.`, moral: `Some gifts come wrapped in poison. What appears as good fortune may be a burden that grows heavier with time. The clearest conscience is worth more than any crown.`, sanskrit: '॥ न्यायेन राज्यम् ॥ — "A kingdom must be founded on justice."' }
+      }
+    },
+    {
+      id: 'b2', title: 'The Fourteen Years', setting: '📍 The outskirts of Ayodhya, Nandigram',
+      text: `Rama has returned. After fourteen years, the exile is over. Ayodhya rejoices. You go to meet Rama — wearing bark-cloth and matted hair, having lived these years as an ascetic, refusing the comforts of the palace. You are about to hand back the sandals.\n\n      Some ministers whisper: "Perhaps Bharata should continue. He has ruled wisely. Rama has been away. The people know Bharata now." The idea could be planted in Rama's mind — he might even agree.`,
+      question: '⚖️ What do you do?',
+      choices: [
+        { letter: 'A', text: 'Return the kingdom entirely and immediately — as you always promised.', hint: 'A vow is a vow', dharmaPoints: 15, type: 'dharmic' },
+        { letter: 'B', text: 'Suggest to Rama that he rest first — offer to continue governing for a short while.', hint: 'A logical transition', dharmaPoints: -5, type: 'neutral' }
+      ],
+      outcomes: {
+        A: { verdict: 'A Promise Kept', icon: '🙏', type: 'dharmic', actual: `Bharata rushed to Rama's feet and placed the sandals back — weeping with joy. Not a single moment's hesitation. Fourteen years of patience, sacrifice and longing, and it all dissolved in the moment of Rama's return. His only desire was to serve his brother. That completeness of devotion is what made Bharata immortal in the epic.`, alt: `The ease with which Bharata let go of power is perhaps the most remarkable thing in the entire Ramayana. He held the throne for fourteen years and gave it back without regret. This is the model of the ideal administrator.`, moral: `The mark of true service is how easily you surrender what was never yours to keep. Bharata kept his word across fourteen years of solitude. In an age where promises last barely fourteen minutes, his example remains revolutionary.`, sanskrit: '॥ सत्यं वद, धर्मं चर ॥ — "Speak truth, walk righteously."' },
+        B: { verdict: 'One Hesitation Too Many', icon: '⏳', type: 'neutral', actual: `Any delay in returning the throne would have dimmed Bharata's extraordinary sacrifice. The beauty of his choice was its completeness — no condition, no hesitation, no negotiation. A vow kept with even one asterisk is a vow half-broken.`, alt: `Even well-intentioned delay can undermine the whole purpose of a promise. Bharata's greatness lay precisely in the fact that he needed no persuasion, no transition period — he was ready the day Rama returned.`, moral: `Half-kept promises are invisible fractures. They hold for a while — then break when tested. The integrity of a commitment is measured not by how long you kept it, but by how completely you released it when the time came.`, sanskrit: '॥ पूर्णाहुति — "A complete offering, held back nothing."' }
+      }
+    }
+  ],
+  vibhishana: [
+    {
+      id: 'v1', title: 'Truth in the Court', setting: '📍 Ravana\'s Royal Court, Lanka',
+      text: `You stand in Ravana's court. Every minister, every general, every demon-lord is silent. You have just told your brother — the most powerful king in all the three worlds — that he is wrong. That keeping Sita is adharma. That Lanka will be destroyed if he persists.\n\n      Ravana's face darkens. The court watches. You know Ravana. You love him. But you also know that what you've said is true. Now he orders you to leave his sight — or remain silent and be given high honours.`,
+      question: '⚖️ What do you do, Vibhishana?',
+      choices: [
+        { letter: 'A', text: 'Leave Lanka entirely and seek Rama\'s camp — Dharma must be followed even if it means exile from your own family.', hint: 'Truth above blood loyalty', dharmaPoints: 20, type: 'dharmic' },
+        { letter: 'B', text: 'Stay in Lanka and keep trying to change Ravana\'s mind from within.', hint: 'Change from the inside', dharmaPoints: 5, type: 'neutral' }
+      ],
+      outcomes: {
+        A: { verdict: 'Dharma Over Blood', icon: '🕊️', type: 'dharmic', actual: `Vibhishana left Lanka and flew to Rama's camp. Many of Rama's generals were suspicious — "Why would Ravana's own brother come to us? It must be a trap!" But Rama accepted him: "One who seeks refuge from me shall never be turned away." Vibhishana's deep knowledge of Lanka, its defences, and Ravana's strategies became crucial to Rama's victory.`, alt: `The world called Vibhishana a traitor. His own family cursed him. But the Ramayana frames his choice as the highest form of loyalty — not to one person, but to the principle of Dharma itself.`, moral: `Sometimes love for a person means refusing to support their worst choices. The most courageous act can be leaving — not out of cowardice, but out of fidelity to what is right. Vibhishana didn't abandon his brother. He refused to abandon his conscience.`, sanskrit: '॥ धर्मे च अर्थे च कामे च मोक्षे च ॥ — "In Dharma lies all wealth, joy, and liberation."' },
+        B: { verdict: 'Change From Within — A Slow Burn', icon: '🕯️', type: 'neutral', actual: `Staying would have meant watching Lanka fall from the inside — increasingly helpless, increasingly complicit. Vibhishana had already spoken. Ravana had already refused. Sometimes when you've said what needed to be said and been rejected, staying becomes not courage but complicity.`, alt: `There is value in trying to change things from within. But there is a moment when that strategy becomes self-deception — when "I'm working for change" becomes an excuse to remain comfortable while wrong things happen.`, moral: `Know when to speak — and know when speaking has done its work. There comes a point where staying and watching wrong unfold is no longer noble persistence — it is participation. Vibhishana's departure was his final, loudest act of love.`, sanskrit: '॥ सत्यमेव परमो धर्मः ॥ — "Truth itself is the highest Dharma."' }
+      }
+    },
+    {
+      id: 'v2', title: 'At Rama\'s Gates', setting: '📍 The Southern Shore, Before Lanka',
+      text: `You have arrived at Rama's camp. You kneel before him — brother of his greatest enemy, demon by birth, unknown in motive. His generals draw weapons. Sugriva says: "He could be a spy. Ravana may have sent him to infiltrate us. We should not risk it."\n\n      Some say execute you. Some say imprison you. Rama alone is silent, considering. He turns to you and asks: "Why have you come?"`,
+      question: '⚖️ What do you say to Rama?',
+      choices: [
+        { letter: 'A', text: 'Tell the complete truth — your background, your conflict with Ravana, and your faith that Rama represents Dharma.', hint: 'Full transparency', dharmaPoints: 15, type: 'dharmic' },
+        { letter: 'B', text: 'Offer military intelligence first — prove your value strategically, explain your reasons later.', hint: 'Utility before trust', dharmaPoints: 0, type: 'neutral' }
+      ],
+      outcomes: {
+        A: { verdict: 'Truth Opens Every Door', icon: '🌟', type: 'dharmic', actual: `Vibhishana's honesty moved Rama. And Rama's response became one of the most celebrated lines in the Ramayana: "If even Ravana himself came to me seeking refuge, I would protect him. How much more one who has come to me voluntarily?" Rama accepted Vibhishana — not for his intelligence value, but on principle.`, alt: `Coming with pure intent and plain truth disarmed every suspicion. When you have nothing to hide and speak it plainly, even the most guarded heart opens.`, moral: `The most powerful thing you can offer anyone is the full truth of who you are and why you are there. Not strategy. Not credentials. Not proof of worth. Just the unguarded truth. That is the beginning of real trust.`, sanskrit: '॥ शरणागतवत्सलः ॥ — "He who is compassionate to those who seek refuge."' },
+        B: { verdict: 'Useful — But Not Yet Trusted', icon: '🗺️', type: 'neutral', actual: `Leading with intelligence would have made Vibhishana valuable, but not trusted. Rama's generals might have used him as a tool — a useful defector — without ever fully believing in him. What earned Vibhishana not just acceptance but deep respect was precisely that he asked for nothing and offered everything, transparently.`, alt: `When we lead with what we can offer, we create a transactional relationship. When we lead with who we are, we create a bond. Vibhishana didn't need to prove his value — his integrity proved it for him.`, moral: `Transactional trust lasts only as long as the transaction. The trust built on honesty outlasts every crisis. Be known first for your character — your skills will follow you naturally.`, sanskrit: '॥ विश्वासः परमं धनम् ॥ — "Trust is the greatest wealth."' }
+      }
+    }
+  ]
+};
+
+// ============================================================
+//  STATE
+// ============================================================
+let state = {
+  screen: 'landing',
+  character: null,
+  scenarioIndex: 0,
+  dharmaScore: 0,
+  choices: [],          // current character session choices
+  allHistory: {},       // { charId: { choices: [], score: int, completed: bool } }
+  journalEntries: [],
+  lastChoice: null,
+  lastScenario: null
+};
+
+// ============================================================
+//  INIT
+// ============================================================
+window.onload = function () {
+  createParticles();
+  renderCharacters();
+  loadJournalFromStorage();
+  loadHistoryFromStorage();
+};
+
+function createParticles() {
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = Math.random() * 100 + 'vw';
+    p.style.animationDuration = (8 + Math.random() * 20) + 's';
+    p.style.animationDelay = (Math.random() * 15) + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 3) + 'px';
+    p.style.opacity = Math.random() * 0.4;
+    container.appendChild(p);
+  }
+}
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function goToScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + screenId).classList.add('active');
+  state.screen = screenId;
+
+  const nav = document.getElementById('mainNav');
+  const showNav = screenId !== 'landing';
+  nav.className = 'main-nav ' + (showNav ? 'visible' : '');
+  // Reset revealed state when switching screens
+  if (!showNav) nav.classList.remove('revealed');
+
+  const hasChoices = state.choices.length > 0;
+  document.getElementById('navResults').style.display = hasChoices ? 'inline-block' : 'none';
+  const hasAnyHistory = Object.keys(state.allHistory).length > 0;
+  document.getElementById('navTree').style.display = hasAnyHistory ? 'inline-block' : 'none';
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goBack() {
+  if (state.screen === 'journal' || state.screen === 'tree') {
+    goToScreen(state.character ? 'outcome' : 'characters');
+  } else {
+    goToScreen('characters');
+  }
+}
+
+function startJourney() { goToScreen('characters'); }
+
+// ============================================================
+//  CHARACTERS — all dots filled (3 total)
+// ============================================================
+function renderCharacters() {
+  const grid = document.getElementById('charactersGrid');
+  grid.innerHTML = '';
+  CHARACTERS.forEach(char => {
+    const card = document.createElement('div');
+    card.className = 'character-card fade-in';
+
+    // Always 3 filled dots
+    const dots = Array(3).fill(0).map(() =>
+      `<span class="diff-dot filled"></span>`
+    ).join('');
+
+    // Show completed badge if this char has been played
+    const history = state.allHistory[char.id];
+    const playedBadge = history
+      ? `<div style="font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:0.12em;color:var(--dharma-green);margin-top:8px;text-transform:uppercase;">✦ Played · ${history.score >= 0 ? '+' : ''}${history.score} Dharma</div>`
+      : '';
+
+    card.innerHTML = `
+      <span class="char-emoji">${char.emoji}</span>
+      <div class="char-name">${char.name}</div>
+      <div class="char-role">${char.role}</div>
+      <div class="char-desc">${char.desc}</div>
+      <div class="char-difficulty">${dots}</div>
+      ${playedBadge}
+    `;
+    card.onclick = () => selectCharacter(char.id);
+    grid.appendChild(card);
+  });
+}
+
+function selectCharacter(charId) {
+  // Save any in-progress session before switching
+  if (state.character && state.choices.length > 0) {
+    saveCurrentSessionToHistory();
+  }
+
+  state.character = charId;
+  state.scenarioIndex = 0;
+  state.dharmaScore = 0;
+  state.choices = [];
+  state.lastChoice = null;
+  state.lastScenario = null;
+
+  // Restore if previously played
+  if (state.allHistory[charId]) {
+    // Start fresh run (re-play)
+    state.allHistory[charId] = { choices: [], score: 0, completed: false };
+  } else {
+    state.allHistory[charId] = { choices: [], score: 0, completed: false };
+  }
+
+  saveHistoryToStorage();
+  loadScenario();
+  goToScreen('story');
+}
+
+function saveCurrentSessionToHistory() {
+  if (!state.character) return;
+  if (!state.allHistory[state.character]) {
+    state.allHistory[state.character] = { choices: [], score: 0, completed: false };
+  }
+  state.allHistory[state.character].choices = [...state.choices];
+  state.allHistory[state.character].score = state.dharmaScore;
+  saveHistoryToStorage();
+}
+
+// ============================================================
+//  STORY & SCENARIOS
+// ============================================================
+function loadScenario() {
+  const char = CHARACTERS.find(c => c.id === state.character);
+  const scenarios = SCENARIOS[state.character];
+  const scenario = scenarios[state.scenarioIndex];
+
+  document.getElementById('storyCharEmoji').textContent = char.emoji;
+  document.getElementById('storyCharName').textContent = char.name;
+  document.getElementById('scenarioCount').textContent =
+    `Scenario ${state.scenarioIndex + 1} of ${scenarios.length}`;
+
+  document.getElementById('scenarioTitle').textContent = scenario.title;
+  document.getElementById('scenarioSetting').textContent = scenario.setting;
+  document.getElementById('scenarioText').textContent = scenario.text;
+  document.getElementById('scenarioQuestion').textContent = scenario.question;
+
+  updateDharmaMeter();
+
+  const grid = document.getElementById('choicesGrid');
+  grid.innerHTML = '';
+  scenario.choices.forEach(choice => {
+    const btn = document.createElement('div');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `
+      <div class="choice-letter">Option ${choice.letter}</div>
+      <div class="choice-text">${choice.text}</div>
+      <div class="choice-hint">${choice.hint}</div>
+    `;
+    btn.onclick = () => makeChoice(choice, scenario);
+    grid.appendChild(btn);
+  });
+
+  renderMiniTree();
+}
+
+function makeChoice(choice, scenario) {
+  state.lastChoice = choice;
+  state.lastScenario = scenario;
+  state.dharmaScore += choice.dharmaPoints;
+  state.choices.push({
+    scenario: scenario.title,
+    choice: choice.text,
+    dharmaPoints: choice.dharmaPoints,
+    type: choice.type
+  });
+
+  // Sync to allHistory immediately
+  if (!state.allHistory[state.character]) {
+    state.allHistory[state.character] = { choices: [], score: 0, completed: false };
+  }
+  state.allHistory[state.character].choices = [...state.choices];
+  state.allHistory[state.character].score = state.dharmaScore;
+  saveHistoryToStorage();
+
+  showOutcome(choice, scenario);
+  goToScreen('outcome');
+  updateDharmaMeter();
+}
+
+// ============================================================
+//  OUTCOME
+// ============================================================
+function showOutcome(choice, scenario) {
+  const outcome = scenario.outcomes[choice.letter];
+
+  const verdictEl = document.getElementById('outcomeVerdict');
+  verdictEl.textContent = outcome.verdict;
+  verdictEl.className = 'outcome-verdict ' + outcome.type;
+
+  document.getElementById('outcomeIcon').textContent = outcome.icon;
+  document.getElementById('outcomeSubtitle').textContent =
+    choice.type === 'dharmic' ? '✦ A Dharmic Path' :
+    choice.type === 'adharmic' ? '✦ The Adharmic Road' : '✦ A Balanced Path';
+
+  const gainEl = document.getElementById('outcomeDharmaGain');
+  const points = choice.dharmaPoints;
+  const gainClass = points > 0 ? 'positive' : points < 0 ? 'negative' : 'zero';
+  gainEl.innerHTML = `<div class="dharma-gain ${gainClass}">${points > 0 ? '+' : ''}${points} Dharma</div>`;
+
+  document.getElementById('actualOutcome').textContent = outcome.actual;
+  document.getElementById('altOutcome').textContent = outcome.alt;
+  document.getElementById('moralLesson').textContent = outcome.moral;
+  document.getElementById('sanskritQuote').textContent = outcome.sanskrit;
+
+  const nextBtn = document.getElementById('nextBtn');
+  const hasNext = state.scenarioIndex < SCENARIOS[state.character].length - 1;
+  nextBtn.textContent = hasNext ? 'Next Scenario →' : 'See Final Results →';
+  nextBtn.onclick = hasNext ? nextScenario : showResults;
+}
+
+function nextScenario() {
+  state.scenarioIndex++;
+  loadScenario();
+  goToScreen('story');
+}
+
+// ============================================================
+//  DHARMA METER
+// ============================================================
+function updateDharmaMeter() {
+  const bar = document.getElementById('dharmaBar');
+  const text = document.getElementById('dharmaScoreText');
+  const score = state.dharmaScore;
+  const maxPossible = 30;
+  const pct = Math.min(100, Math.max(5, ((score + maxPossible) / (maxPossible * 2)) * 100));
+
+  bar.style.width = pct + '%';
+  if (score >= 20) bar.style.background = 'linear-gradient(90deg, #2ECC71, #27AE60)';
+  else if (score >= 5) bar.style.background = 'linear-gradient(90deg, #F39C12, #E67E22)';
+  else if (score >= -10) bar.style.background = 'linear-gradient(90deg, #E74C3C, #C0392B)';
+  else bar.style.background = 'linear-gradient(90deg, #8B0000, #5C0000)';
+
+  text.textContent = `Score: ${score > 0 ? '+' : ''}${score}`;
+}
+
+// ============================================================
+//  MINI TREE (story screen path trail)
+// ============================================================
+function renderMiniTree() {
+  const container = document.getElementById('decisionTreeViz');
+  if (state.choices.length === 0) { container.innerHTML = ''; return; }
+
+  let html = `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 0;">
+    <span style="font-family:'Cinzel',serif;font-size:0.75rem;color:rgba(212,175,55,0.5);letter-spacing:0.1em;">YOUR PATH:</span>`;
+  state.choices.forEach((c, i) => {
+    const color = c.type === 'dharmic' ? '#2ECC71' : c.type === 'adharmic' ? '#E74C3C' : '#3498DB';
+    html += `<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.04);border:1px solid ${color}33;padding:5px 12px;font-size:0.8rem;color:${color};">
+      <span style="width:6px;height:6px;border-radius:50%;background:${color};flex-shrink:0;"></span>
+      <span style="color:rgba(245,230,200,0.7);">${c.scenario}</span>
+      <span style="color:${color};font-family:'Cinzel',serif;font-size:0.75rem;">${c.dharmaPoints > 0 ? '+' : ''}${c.dharmaPoints}</span>
+    </span>`;
+    if (i < state.choices.length - 1) html += `<span style="color:rgba(212,175,55,0.3);font-size:1rem;">→</span>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// ============================================================
+//  GLOBAL DECISION TREE — all characters ever played
+// ============================================================
+function showDecisionTree() {
+  // Sync current session first
+  saveCurrentSessionToHistory();
+
+  const container = document.getElementById('treeContent');
+  const allPlayedChars = CHARACTERS.filter(c => state.allHistory[c.id] && state.allHistory[c.id].choices.length > 0);
+
+  if (allPlayedChars.length === 0) {
+    container.innerHTML = `<div style="text-align:center;padding:40px;color:rgba(245,230,200,0.4);font-style:italic;">No choices made yet. Begin a character's journey to see your tree.</div>`;
+    goToScreen('tree');
+    return;
+  }
+
+  let html = '';
+
+  allPlayedChars.forEach(char => {
+    const history = state.allHistory[char.id];
+    const scenarios = SCENARIOS[char.id];
+    const charScore = history.score;
+    const scoreColor = charScore >= 15 ? '#2ECC71' : charScore >= 0 ? '#F39C12' : '#E74C3C';
+
+    html += `<div class="tree-char-section">
+      <div class="tree-char-header">
+        <span style="font-size:2rem;">${char.emoji}</span>
+        <div>
+          <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);">${char.name}</div>
+          <div style="font-size:0.8rem;color:rgba(245,230,200,0.5);letter-spacing:0.05em;">${char.role}</div>
+        </div>
+        <div class="tree-char-score" style="color:${scoreColor};">
+          <div style="font-family:'Cinzel',serif;font-size:1.2rem;">${charScore >= 0 ? '+' : ''}${charScore}</div>
+          <div style="font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(245,230,200,0.4);">Dharma</div>
+        </div>
+      </div>
+      <div class="tree-char-body">`;
+
+    scenarios.forEach((scenario, i) => {
+      const playerChoice = history.choices[i];
+
+      html += `<div style="display:flex;gap:16px;margin-bottom:${i < scenarios.length - 1 ? '20px' : '0'};align-items:flex-start;">
+        <div style="flex-shrink:0;text-align:center;">
+          <div style="width:32px;height:32px;border-radius:50%;background:${playerChoice
+            ? (playerChoice.type === 'dharmic' ? '#2ECC71' : playerChoice.type === 'adharmic' ? '#E74C3C' : '#3498DB')
+            : 'rgba(212,175,55,0.15)'};border:2px solid ${playerChoice ? 'rgba(212,175,55,0.5)' : 'rgba(212,175,55,0.2)'};display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:0.8rem;color:${playerChoice ? '#000' : 'rgba(212,175,55,0.4)'};font-weight:700;">${i + 1}</div>
+          ${i < scenarios.length - 1 ? '<div style="width:2px;height:30px;background:rgba(212,175,55,0.1);margin:4px auto;"></div>' : ''}
+        </div>
+        <div style="flex:1;padding-top:4px;">
+          <div style="font-family:\'Cinzel\',serif;font-size:0.95rem;color:var(--gold);margin-bottom:6px;">${scenario.title}</div>`;
+
+      if (playerChoice) {
+        const typeColor = playerChoice.type === 'dharmic' ? '#2ECC71' : playerChoice.type === 'adharmic' ? '#E74C3C' : '#3498DB';
+        html += `<div style="background:rgba(255,255,255,0.03);border:1px solid ${typeColor}2A;padding:10px 14px;">
+            <div style="font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:${typeColor};font-family:'Cinzel',serif;margin-bottom:4px;">${playerChoice.type}</div>
+            <div style="font-size:0.88rem;color:var(--parchment);line-height:1.5;">${playerChoice.choice.length > 100 ? playerChoice.choice.substring(0,100)+'...' : playerChoice.choice}</div>
+            <div style="font-size:0.78rem;color:${typeColor};font-family:'Cinzel',serif;margin-top:5px;">${playerChoice.dharmaPoints > 0 ? '+' : ''}${playerChoice.dharmaPoints} Dharma</div>
+          </div>`;
+      } else {
+        html += `<div style="background:rgba(212,175,55,0.03);border:1px dashed rgba(212,175,55,0.15);padding:10px 14px;font-size:0.88rem;color:rgba(245,230,200,0.3);font-style:italic;">Not yet reached...</div>`;
+      }
+
+      html += `</div></div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  // If some characters haven't been played yet, show them greyed out
+  const unplayedChars = CHARACTERS.filter(c => !state.allHistory[c.id] || state.allHistory[c.id].choices.length === 0);
+  if (unplayedChars.length > 0) {
+    html += `<div style="margin-top:24px;padding:16px 24px;border:1px dashed rgba(212,175,55,0.12);background:rgba(212,175,55,0.02);">
+      <div style="font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.15em;color:rgba(212,175,55,0.35);text-transform:uppercase;margin-bottom:10px;">Paths Not Yet Walked</div>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">`;
+    unplayedChars.forEach(c => {
+      html += `<span style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border:1px solid rgba(212,175,55,0.1);background:rgba(212,175,55,0.03);">
+        <span style="font-size:1.1rem;opacity:0.4;">${c.emoji}</span>
+        <span style="font-family:'Cinzel',serif;font-size:0.8rem;color:rgba(245,230,200,0.3);">${c.name}</span>
+      </span>`;
+    });
+    html += `</div></div>`;
+  }
+
+  container.innerHTML = html;
+  goToScreen('tree');
+}
+
+function continueFromTree() {
+  if (state.lastChoice) goToScreen('outcome');
+  else if (state.character) goToScreen('story');
+  else goToScreen('characters');
+}
+
+// ============================================================
+//  RESULTS
+// ============================================================
+function showResults() {
+  // Mark completed
+  if (state.allHistory[state.character]) {
+    state.allHistory[state.character].completed = true;
+  }
+  saveHistoryToStorage();
+
+  const score = state.dharmaScore;
+  const char = CHARACTERS.find(c => c.id === state.character);
+
+  document.getElementById('finalScore').textContent = score;
+
+  let title, desc;
+  if (score >= 40) { title = 'Maryada Purushottam'; desc = 'Your choices reflected the highest Dharma — selfless, wise, and unwavering. You walked the path of the ideal.'; }
+  else if (score >= 20) { title = 'Dharma Rakshak'; desc = 'You chose righteousness more often than not. Your journey shows the struggle of a sincere heart.'; }
+  else if (score >= 0) { title = 'The Seeker'; desc = 'Your path was mixed — neither fully Dharmic nor fully Adharmic. You are still learning, still choosing, still evolving.'; }
+  else if (score >= -15) { title = 'The Fallen Hero'; desc = 'Pride, desire, and ego guided many of your choices. Yet even in falling, there is the seed of wisdom.'; }
+  else { title = 'Adharma\'s Shadow'; desc = 'Your choices darkened the path. But the Ramayana teaches: no soul is beyond redemption.'; }
+
+  document.getElementById('resultsTitle').textContent = `${char.emoji} ${title}`;
+  document.getElementById('resultsDesc').textContent = desc;
+
+  const summaryContainer = document.getElementById('choicesSummary');
+  let summaryHTML = '<div style="font-family:\'Cinzel\',serif;font-size:0.8rem;letter-spacing:0.15em;color:var(--saffron);margin-bottom:12px;text-transform:uppercase;">Your Choices</div>';
+  state.choices.forEach(c => {
+    const tc = c.type === 'dharmic' ? 'dharmic' : c.type === 'adharmic' ? 'adharmic' : 'neutral';
+    summaryHTML += `<div class="summary-item">
+      <div class="summary-dot ${tc}"></div>
+      <div>
+        <div class="summary-text"><strong>${c.scenario}</strong></div>
+        <div class="summary-text" style="opacity:0.7;font-size:0.9rem;">${c.choice.substring(0, 80)}${c.choice.length > 80 ? '...' : ''}</div>
+        <div class="summary-score ${tc}">${c.dharmaPoints > 0 ? '+' : ''}${c.dharmaPoints} Dharma · ${c.type.toUpperCase()}</div>
+      </div>
+    </div>`;
+  });
+  summaryContainer.innerHTML = summaryHTML;
+
+  document.getElementById('navResults').style.display = 'inline-block';
+  goToScreen('results');
+  renderCharacters(); // refresh character cards to show "Played" badge
+}
+
+// ============================================================
+//  JOURNAL — with edit & delete
+// ============================================================
+function loadJournalFromStorage() {
+  try {
+    const saved = localStorage.getItem('itihasaverse_journal');
+    if (saved) state.journalEntries = JSON.parse(saved);
+    renderJournal();
+  } catch(e) {}
+}
+
+function saveJournalEntry() {
+  const input = document.getElementById('journalInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const char = state.character ? CHARACTERS.find(c => c.id === state.character) : null;
+  const entry = {
+    id: Date.now(),
+    text,
+    date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+    character: char ? char.name : 'General',
+    emoji: char ? char.emoji : '📖'
+  };
+
+  state.journalEntries.unshift(entry);
+  persistJournal();
+  input.value = '';
+  renderJournal();
+}
+
+function deleteJournalEntry(id) {
+  if (!confirm('Delete this journal entry?')) return;
+  state.journalEntries = state.journalEntries.filter(e => e.id !== id);
+  persistJournal();
+  renderJournal();
+}
+
+function startEditEntry(id) {
+  // Replace static text with editable textarea
+  const entry = state.journalEntries.find(e => e.id === id);
+  if (!entry) return;
+
+  const entryEl = document.querySelector(`[data-entry-id="${id}"]`);
+  if (!entryEl) return;
+
+  // Swap text for textarea
+  const textEl = entryEl.querySelector('.journal-entry-text');
+  const actionsEl = entryEl.querySelector('.journal-entry-actions');
+
+  textEl.style.display = 'none';
+  actionsEl.style.display = 'none';
+
+  const textarea = document.createElement('textarea');
+  textarea.className = 'journal-entry-edit-area';
+  textarea.value = entry.text;
+  entryEl.appendChild(textarea);
+  textarea.focus();
+
+  const editActions = document.createElement('div');
+  editActions.className = 'journal-entry-actions';
+  editActions.innerHTML = `
+    <button class="journal-entry-actions button btn-edit-cancel" onclick="cancelEdit(${id})">Cancel</button>
+    <button class="journal-entry-actions button btn-edit-save" onclick="saveEdit(${id})">Save Changes</button>
+  `;
+  entryEl.appendChild(editActions);
+
+  // Store reference
+  entryEl._editTextarea = textarea;
+}
+
+function cancelEdit(id) {
+  renderJournal(); // just re-render to restore
+}
+
+function saveEdit(id) {
+  const entryEl = document.querySelector(`[data-entry-id="${id}"]`);
+  if (!entryEl || !entryEl._editTextarea) return;
+  const newText = entryEl._editTextarea.value.trim();
+  if (!newText) return;
+
+  const entry = state.journalEntries.find(e => e.id === id);
+  if (entry) {
+    entry.text = newText;
+    entry.edited = true;
+  }
+  persistJournal();
+  renderJournal();
+}
+
+function persistJournal() {
+  try { localStorage.setItem('itihasaverse_journal', JSON.stringify(state.journalEntries)); } catch(e) {}
+}
+
+function renderJournal() {
+  const container = document.getElementById('journalEntries');
+  if (state.journalEntries.length === 0) {
+    container.innerHTML = '<p style="color:rgba(245,230,200,0.35);font-style:italic;font-size:0.95rem;">Your reflections will appear here...</p>';
+    return;
+  }
+
+  container.innerHTML = state.journalEntries.map(e => `
+    <div class="journal-entry" data-entry-id="${e.id}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">
+        <div class="journal-entry-meta">${e.emoji} ${e.character} · ${e.date}${e.edited ? ' · <em style="opacity:0.6;">edited</em>' : ''}</div>
+        <div style="display:flex;gap:2px;flex-shrink:0;">
+          <button class="btn-icon btn-entry-edit" onclick="startEditEntry(${e.id})" title="Edit entry">✏️</button>
+          <button class="btn-icon btn-entry-delete" onclick="deleteJournalEntry(${e.id})" title="Delete entry">🗑️</button>
+        </div>
+      </div>
+      <div class="journal-entry-text">${e.text}</div>
+      <div class="journal-entry-actions" style="display:none;"></div>
+    </div>
+  `).join('');
+
+  // Re-attach data-entry-id for querySelector
+  container.querySelectorAll('.journal-entry').forEach((el, i) => {
+    el.setAttribute('data-entry-id', state.journalEntries[i].id);
+  });
+}
+
+// ============================================================
+//  NAV AUTO-HIDE — show when mouse within 60px of top
+// ============================================================
+(function() {
+  let hideTimer = null;
+
+  document.addEventListener('mousemove', function(e) {
+    const nav = document.getElementById('mainNav');
+    if (!nav.classList.contains('visible')) return;
+
+    if (e.clientY <= 60) {
+      // Mouse near top — show nav
+      clearTimeout(hideTimer);
+      nav.classList.add('revealed');
+    } else if (!nav.matches(':hover')) {
+      // Mouse away and not hovering nav — hide after short delay
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function() {
+        if (!nav.matches(':hover')) nav.classList.remove('revealed');
+      }, 400);
+    }
+  });
+
+  // Keep nav visible while mouse is directly on it
+  document.addEventListener('mouseleave', function() {
+    const nav = document.getElementById('mainNav');
+    if (nav) {
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(function() {
+        nav.classList.remove('revealed');
+      }, 300);
+    }
+  });
+})();
+
+function saveHistoryToStorage() {
+  try { localStorage.setItem('itihasaverse_history', JSON.stringify(state.allHistory)); } catch(e) {}
+}
+
+function loadHistoryFromStorage() {
+  try {
+    const saved = localStorage.getItem('itihasaverse_history');
+    if (saved) state.allHistory = JSON.parse(saved);
+  } catch(e) {}
+  renderCharacters();
+}
+</script>
+</body>
+</html>
